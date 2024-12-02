@@ -1,0 +1,11 @@
+# Activity-1-Prediction-with-Back-Propagation-and-Linear-Regression
+
+import numpy as np # linear algebra
+import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+df_original = pd.read_csv('data.csv')
+
+pd.set_option('display.max_columns', None) # so it shows all columns
+print(df_original.head())
