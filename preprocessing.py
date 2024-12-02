@@ -216,3 +216,7 @@ plt.show()
 
 # Save preprocessed dataset to a new CSV file
 df_normalized.to_csv('preprocessed_dataset.csv', index=False)
+
+## TO DO: Select randomly 80% of the patterns for training and validation, and the remaining
+## 20% for test; it is important to shuffle the original data, to destroy any kind of
+## sorting it could have.
