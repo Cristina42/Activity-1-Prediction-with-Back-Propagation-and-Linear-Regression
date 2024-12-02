@@ -132,3 +132,21 @@ df_with_encoded.drop(['Country', 'Status'], axis=1, inplace=True)
 # Check the final dataset shape and the first few rows
 print(df_with_encoded.shape)
 print(df_with_encoded.head())
+
+# List of the 15 columns 
+columns = df_with_encoded.columns
+
+# Create the subplots
+plt.subplots(figsize=(27, 15))
+
+count = 1
+for i in columns:
+    plt.subplot(3, 5, count)  # 4 rows, 5 columns
+    sns.histplot(data=df_with_encoded[i], kde=True) 
+    plt.title(i, fontsize=12)
+    count += 1
+
+plt.suptitle('Histograms of all numeric variables of the dataset', fontsize=16)
+plt.subplots_adjust(top=0.85)
+plt.tight_layout()
+plt.show()
