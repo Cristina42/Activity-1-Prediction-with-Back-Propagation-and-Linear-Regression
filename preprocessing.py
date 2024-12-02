@@ -59,4 +59,22 @@ print(f"Number of rows with measles values above 1000: {measles_above_1000}")
 # Drop 'measles' from the new dataframe
 df_new = df_new.drop(columns=['Measles '])
 
+# Verify the column has been removed
+print(df_new.head())
+
+# Drop the 'bmi' and 'thinness5-9' columns
+df_new.drop([' BMI ', ' thinness  1-19 years'], axis=1, inplace=True)
+
+# Check the updated dataframe
+print(df_new.head())
+
+# Count the number of values above 1000 in the 'under-five deaths' column
+count_above_1000 = df_original[df_original['under-five deaths '] > 1000].shape[0]
+
+# Print the result
+print("Number of values above 1000 in 'under-five deaths':", count_above_1000)
+
+# Remove rows where 'under-five deaths' is above 1000
+df_new = df_new[df_new['under-five deaths '] <= 1000]
+
 
