@@ -13,3 +13,9 @@ print(df_original.head())
 
 # Show mean, median, min and max values
 print(df_original.describe().loc[['mean', '50%', 'min', 'max']])
+
+# Filter only numeric columns
+numeric_df = df_original.select_dtypes(include=['number'])
+
+# Plot the boxplots
+plt.subplots(figsize=(20, 8))
