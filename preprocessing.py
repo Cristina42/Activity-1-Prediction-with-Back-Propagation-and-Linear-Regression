@@ -83,4 +83,19 @@ df_new = df_new.drop(columns=['infant deaths'])
 # Verify that the column is removed
 print(df_new.columns)
 
+# Select only numeric columns
+numericcolumns_df = df_new.select_dtypes(include=['float64', 'int64'])
+
+# Now compute correlation
+correlation_matrix = numericcolumns_df.corr()
+
+# Print the correlation with 'Life expectancy'
+print(correlation_matrix['Life expectancy '])
+
+# Remove the 'Population' column
+df_new = df_new.drop(columns=['Population'])
+
+# Verify that the column is removed
+print(df_new.columns)
+
 
