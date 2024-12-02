@@ -7,5 +7,9 @@ import seaborn as sns
 
 df_original = pd.read_csv('data.csv')
 
+# Show shape of the variables
 pd.set_option('display.max_columns', None) # so it shows all columns
 print(df_original.head())
+
+# Show mean, median, min and max values
+print(df_original.describe().loc[['mean', '50%', 'min', 'max']])
