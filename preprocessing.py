@@ -4,6 +4,7 @@ import numpy as np # linear algebra
 import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)
 import matplotlib.pyplot as plt
 import seaborn as sns
+from sklearn.preprocessing import LabelEncoder
 
 df_original = pd.read_csv('data.csv')
 
@@ -113,3 +114,21 @@ df_cleaned = df_new.dropna()
 # Check the new dataset
 print(f"Original dataset shape: {df_new.shape}")
 print(f"Cleaned dataset shape: {df_cleaned.shape}")
+
+# Create a copy of df_cleaned to preserve the original dataset
+df_with_encoded = df_cleaned.copy()
+
+# Encode 'Country' with LabelEncoder
+encoder = LabelEncoder()
+df_with_encoded['Country_'] = encoder.fit_transform(df_with_encoded['Country'])
+
+# Encode 'Status' using LabelEncoder or map
+status_mapping = {"Developed": 0, "Developing": 1}  # Mapping manually
+df_with_encoded['Status_'] = df_with_encoded['Status'].map(status_mapping)
+
+# Drop the original 'Country' and 'Status' columns if you no longer need them
+df_with_encoded.drop(['Country', 'Status'], axis=1, inplace=True)
+
+# Check the final dataset shape and the first few rows
+print(df_with_encoded.shape)
+print(df_with_encoded.head())
