@@ -32,4 +32,22 @@ plt.subplots_adjust(top=0.85)  # Adjust the title space to avoid overlap
 plt.tight_layout()  # Ensure that subplots do not overlap
 plt.show()
 
+# Count the number of rows where 'percentage expenditure' is greater than 100
+count_above_1000 = df_original[df_original['percentage expenditure'] > 100].shape[0]
+
+# Display the result
+print(f"Number of rows with 'percentage expenditure' above 100: {count_above_1000}")
+
+# Count the number of rows where 'percentage expenditure' is 0
+count_of_0 = df_original[df_original['percentage expenditure'] == 0].shape[0]
+
+# Display the result
+print(f"Number of rows with 'percentage expenditure' of 0: {count_of_0}")
+
+# Remove the 'percentage expenditure' column from the dataframe
+df_new = df_original.drop(columns=['percentage expenditure'])
+
+# Display the cleaned dataframe
+print(df_new.head())
+
 
