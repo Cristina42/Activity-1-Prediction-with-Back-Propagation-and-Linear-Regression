@@ -50,4 +50,13 @@ df_new = df_original.drop(columns=['percentage expenditure'])
 # Display the cleaned dataframe
 print(df_new.head())
 
+# Count the number of rows where 'measles' is greater than 1000
+measles_above_1000 = df_original[df_original['Measles '] > 1000].shape[0]
+
+# Display the result
+print(f"Number of rows with measles values above 1000: {measles_above_1000}")
+
+# Drop 'measles' from the new dataframe
+df_new = df_new.drop(columns=['Measles '])
+
 
