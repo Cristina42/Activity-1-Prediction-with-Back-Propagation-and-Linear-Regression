@@ -98,4 +98,18 @@ df_new = df_new.drop(columns=['Population'])
 # Verify that the column is removed
 print(df_new.columns)
 
+# Remove the 'Hepatitis B' column
+df_new = df_new.drop(columns=['Hepatitis B'])
 
+# Verify that the column is removed
+print(df_new.columns)
+
+# Show missing values
+print(df_new.isna().sum())
+
+# Remove missing values
+df_cleaned = df_new.dropna()
+
+# Check the new dataset
+print(f"Original dataset shape: {df_new.shape}")
+print(f"Cleaned dataset shape: {df_cleaned.shape}")
