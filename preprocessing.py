@@ -77,4 +77,10 @@ print("Number of values above 1000 in 'under-five deaths':", count_above_1000)
 # Remove rows where 'under-five deaths' is above 1000
 df_new = df_new[df_new['under-five deaths '] <= 1000]
 
+# Remove the 'infant deaths' column
+df_new = df_new.drop(columns=['infant deaths'])
+
+# Verify that the column is removed
+print(df_new.columns)
+
 
