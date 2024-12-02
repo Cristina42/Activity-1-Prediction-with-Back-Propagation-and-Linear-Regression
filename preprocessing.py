@@ -5,6 +5,7 @@ import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.preprocessing import LabelEncoder
+from scipy import stats
 
 df_original = pd.read_csv('data.csv')
 
@@ -148,5 +149,26 @@ for i in columns:
 
 plt.suptitle('Histograms of all numeric variables of the dataset', fontsize=16)
 plt.subplots_adjust(top=0.85)
+plt.tight_layout()
+plt.show()
+
+# Apply Box-Cox transformation to each column
+df_transformed = df_with_encoded.copy()
+
+for column in df_transformed.columns:
+    # Apply Box-Cox to positive values only
+    if df_transformed[column].min() > 0:
+        df_transformed[column], _ = stats.boxcox(df_transformed[column])
+
+
+# Plot histograms for transformed variables
+plt.figure(figsize=(18, 12))
+count = 1
+for column in df_transformed.columns:
+    plt.subplot(4, 5, count)
+    sns.histplot(df_transformed[column], kde=True)
+    plt.title(f'{column} - Transformed', fontsize=12)
+    count += 1
+
 plt.tight_layout()
 plt.show()
