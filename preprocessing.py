@@ -242,3 +242,11 @@ print("Training+Validation set (X):", X_train_val.shape)
 print("Test set (X):", X_test.shape)
 print("Training+Validation set (y):", y_train_val.shape)
 print("Test set (y):", y_test.shape)
+
+# Combine input features and output labels for training/validation and test sets
+train_data = pd.concat([X_train_val, y_train_val], axis=1)  # Concatenate X and y for training
+test_data = pd.concat([X_test, y_test], axis=1)  # Concatenate X and y for testing
+
+# Save the data to CSV files
+train_data.to_csv('train_data.csv', index=False)  # Save the training data
+test_data.to_csv('test_data.csv', index=False)  # Save the test data
