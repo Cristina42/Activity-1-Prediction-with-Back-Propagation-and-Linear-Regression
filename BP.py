@@ -17,7 +17,14 @@ class NeuralNet:
         self.delta = [np.zeros((layer, 1)) for layer in layers[1:]]  # Error terms (Δ)
         self.d_w_prev = [np.zeros_like(w) for w in self.w]  # Previous weight changes
         self.d_theta_prev = [np.zeros_like(t) for t in self.theta]  # Previous bias changes
+   
+    def sigmoid(self, z):
+        return 1 / (1 + np.exp(-z))
 
+    def sigmoid_derivative(self, z):
+        sig = self.sigmoid(z)
+        return sig * (1 - sig)
+    
     def relu(self, z):
         return np.maximum(0, z)
 
@@ -29,6 +36,12 @@ class NeuralNet:
 
     def linear_derivative(self, z):
         return np.ones_like(z)
+
+    def tanh(self, z):
+        return np.tanh(z)
+
+    def tanh_derivative(self, z):
+        return 1 - np.tanh(z) ** 2
 
     def activation_function(self, z, is_output_layer=False):
         """
