@@ -26,44 +26,6 @@ class NeuralNet:
         sig = self.sigmoid(z)
         return sig * (1 - sig)
 
-    def relu(self, z):
-        return np.maximum(0, z)
-
-    def relu_derivative(self, z):
-        return np.where(z > 0, 1, 0)
-
-    def linear(self, z):
-        return z
-
-    def linear_derivative(self, z):
-        return np.ones_like(z)
-
-    def tanh(self, z):
-        return np.tanh(z)
-
-    def tanh_derivative(self, z):
-        return 1 - np.tanh(z)**2
-
-    def activation_function(self, z):
-        if self.fact == 'sigmoid':
-            return self.sigmoid(z)
-        elif self.fact == 'relu':
-            return self.relu(z)
-        elif self.fact == 'linear':
-            return self.linear(z)
-        elif self.fact == 'tanh':
-            return self.tanh(z)
-
-    def activation_derivative(self, z):
-        if self.fact == 'sigmoid':
-            return self.sigmoid_derivative(z)
-        elif self.fact == 'relu':
-            return self.relu_derivative(z)
-        elif self.fact == 'linear':
-            return self.linear_derivative(z)
-        elif self.fact == 'tanh':
-            return self.tanh_derivative(z)
-
     def forward(self, X):
         self.xi[0] = X  # Set input data as the first layer activations
         for i in range(1, self.L):
