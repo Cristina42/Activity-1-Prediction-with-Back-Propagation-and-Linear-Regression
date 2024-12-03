@@ -21,6 +21,13 @@ class NeuralNet:
         self.d_w_prev = [np.zeros_like(w) for w in self.w]  # Previous weight changes (for momentum)
         self.d_theta_prev = [np.zeros_like(t) for t in self.theta]  # Previous bias changes (for momentum)
 
+    def sigmoid(self, z):
+        return 1 / (1 + np.exp(-z))
+
+    def sigmoid_derivative(self, z):
+        sig = self.sigmoid(z)
+        return sig * (1 - sig)
+
     self.xi = []
     for lay in range(self.L):
       self.xi.append(np.zeros(layers[lay]))
