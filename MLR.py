@@ -13,3 +13,25 @@ y_train = train_data['Life expectancy ']  # Extract the target column from train
 
 X_test = test_data.drop(columns=['Life expectancy '])  # Drop the target column from testing data
 y_test = test_data['Life expectancy ']  # Extract the target column from testing data
+
+# Initialize the regressor
+regressor = LinearRegression()
+
+# Fit the regressor on the training data
+regressor.fit(X_train, y_train)
+
+# Make predictions on the test data
+y_pred = regressor.predict(X_test)
+
+# Calculate Mean Squared Error (MSE)
+mse = mean_squared_error(y_test, y_pred)
+print(f"Mean Squared Error (MSE): {mse}")
+
+# Calculate Mean Absolute Error (MAE)
+mae = mean_absolute_error(y_test, y_pred)
+print(f"Mean Absolute Error (MAE): {mae}")
+
+# Calculate Mean Absolute Percentage Error (MAPE)
+# Avoid division by zero by checking for zero values in y_test
+mape = np.mean(np.abs((y_test - y_pred) / y_test)) * 100
+print(f"Mean Absolute Percentage Error (MAPE): {mape}%")
