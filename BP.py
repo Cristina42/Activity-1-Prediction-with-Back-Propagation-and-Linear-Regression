@@ -65,7 +65,41 @@ class NeuralNet:
             return self.linear_derivative(z)
         elif self.fact == 'tanh':
             return self.tanh_derivative(z)
-    
+
+    def forward(self, X):
+        self.xi[0] = X  # Set input data as the first layer activations
+        for i in range(1, self.L):
+            z = np.dot(self.w[i - 1], self.xi[i - 1]) + self.theta[i - 1]  # Weighted sum + bias
+            self.xi[i] = self.activation_function(z)  # Activation function applied
+
+    def backpropagate(self, X, y):
+        m = X.shape[1]  # Number of samples
+        self.forward(X)  # Perform forward pass
+        
+        # Compute error for the output layer
+        delta_output = self.xi[-1] - y
+        self.delta[-1] = delta_output * self.activation_derivative(self.xi[-1])  # Delta for output layer
+
+        # Backpropagate the error to the hidden layers
+        for i in range(self.L - 2, -1, -1):
+            self.delta[i] = np.dot(self.w[i + 1].T, self.delta[i + 1]) * self.activation_derivative(self.xi[i + 1])
+
+        # Compute the gradients
+        for i in range(self.L - 1):
+            self.d_w[i] = np.dot(self.delta[i + 1], self.xi[i].T) / m
+            self.d_theta[i] = np.sum(self.delta[i + 1], axis=1, keepdims=True) / m
+
+        # Update weights and biases using gradient descent with momentum
+        for i in range(self.L - 1):
+            self.d_w[i] = self.d_w[i] + self.momentum * self.d_w_prev[i]  # Add momentum term
+            self.d_theta[i] = self.d_theta[i] + self.momentum * self.d_theta_prev[i]  # Add momentum term
+            self.w[i] -= self.learning_rate * self.d_w[i]  # Update weights
+            self.theta[i] -= self.learning_rate * self.d_theta[i]  # Update biases
+
+            # Store previous changes for momentum
+            self.d_w_prev[i] = self.d_w[i]
+            self.d_theta_prev[i] = self.d_theta[i]
+
     self.xi = []
     for lay in range(self.L):
       self.xi.append(np.zeros(layers[lay]))
