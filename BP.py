@@ -2,7 +2,7 @@ import numpy as np
 
 class NeuralNet:
   class NeuralNet:
-    def __init__(self, layers, epochs=1000, learning_rate=0.01, momentum=0.9, activation_function='sigmoid', validation_split=0.2):
+    def __init__(self, layers, epochs=1000, learning_rate=0.01, momentum=0.9, activation_function='relu', validation_split=0.2):
         self.L = len(layers)  # Number of layers
         self.n = layers  # Number of neurons in each layer (including input and output layers)
         self.epochs = epochs
@@ -19,12 +19,17 @@ class NeuralNet:
         self.d_w_prev = [np.zeros_like(w) for w in self.w]  # Previous weight changes
         self.d_theta_prev = [np.zeros_like(t) for t in self.theta]  # Previous bias changes
 
-    def sigmoid(self, z):
-        return 1 / (1 + np.exp(-z))
+    def relu(self, z):
+        return np.maximum(0, z)
 
-    def sigmoid_derivative(self, z):
-        sig = self.sigmoid(z)
-        return sig * (1 - sig)
+    def relu_derivative(self, z):
+        return np.where(z > 0, 1, 0)
+
+    def linear(self, z):
+        return z
+
+    def linear_derivative(self, z):
+        return np.ones_like(z)
 
     def forward(self, X):
         self.xi[0] = X  # Set input data as the first layer activations
