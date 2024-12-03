@@ -49,10 +49,17 @@ class NeuralNet:
             return self.relu_derivative(z)
 
     def forward(self, X):
-        self.xi[0] = X  # Set input data as the first layer activations
-        for i in range(1, self.L):
-            z = np.dot(self.w[i - 1], self.xi[i - 1]) + self.theta[i - 1]  # Weighted sum + bias
-            self.xi[i] = self.activation_function(z)  # Activation function applied
+        """
+        Perform feed-forward propagation using h (fields) and xi (activations).
+        """
+        self.xi[0] = X  # Input layer activations
+        for l in range(1, self.L - 1):  # Hidden layers
+            z = np.dot(self.w[l - 1], self.xi[l - 1]) + self.theta[l - 1]
+            self.xi[l] = self.activation_function(z)  # Apply ReLU
+
+        # Output layer
+        z_output = np.dot(self.w[-1], self.xi[-2]) + self.theta[-1]
+        self.xi[-1] = self.activation_function(z_output, is_output_layer=True)  # Apply Linear
 
     def backpropagate(self, X, y):
         m = X.shape[1]  # Number of samples
