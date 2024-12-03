@@ -62,32 +62,26 @@ class NeuralNet:
         self.xi[-1] = self.activation_function(z_output, is_output_layer=True)  # Apply Linear
 
     def backpropagate(self, X, y):
+        """
+        Perform backpropagation and update weights and thresholds using momentum.
+        """
         m = X.shape[1]  # Number of samples
-        self.forward(X)  # Perform forward pass
-        
-        # Compute error for the output layer
-        delta_output = self.xi[-1] - y
-        self.delta[-1] = delta_output * self.activation_derivative(self.xi[-1])  # Delta for output layer
+        self.forward(X)  # Forward pass
 
-        # Backpropagate the error to the hidden layers
-        for i in range(self.L - 2, -1, -1):
-            self.delta[i] = np.dot(self.w[i + 1].T, self.delta[i + 1]) * self.activation_derivative(self.xi[i + 1])
+        # Output layer error
+        self.delta[-1] = (self.xi[-1] - y) * self.activation_derivative(self.xi[-1], is_output_layer=True)
 
-        # Compute the gradients
-        for i in range(self.L - 1):
-            self.d_w[i] = np.dot(self.delta[i + 1], self.xi[i].T) / m
-            self.d_theta[i] = np.sum(self.delta[i + 1], axis=1, keepdims=True) / m
+        # Backpropagate the error
+        for l in range(self.L - 2, 0, -1):  # Hidden layers
+            self.delta[l - 1] = np.dot(self.w[l].T, self.delta[l]) * self.activation_derivative(self.xi[l])
 
-        # Update weights and biases using gradient descent with momentum
-        for i in range(self.L - 1):
-            self.d_w[i] = self.d_w[i] + self.momentum * self.d_w_prev[i]  # Add momentum term
-            self.d_theta[i] = self.d_theta[i] + self.momentum * self.d_theta_prev[i]  # Add momentum term
-            self.w[i] -= self.learning_rate * self.d_w[i]  # Update weights
-            self.theta[i] -= self.learning_rate * self.d_theta[i]  # Update biases
+        # Update weights and biases
+        for l in range(self.L - 1):
+            self.d_w_prev[l] = self.learning_rate * np.dot(self.delta[l], self.xi[l].T) + self.momentum * self.d_w_prev[l]
+            self.d_theta_prev[l] = self.learning_rate * np.sum(self.delta[l], axis=1, keepdims=True) + self.momentum * self.d_theta_prev[l]
 
-            # Store previous changes for momentum
-            self.d_w_prev[i] = self.d_w[i]
-            self.d_theta_prev[i] = self.d_theta[i]
+            self.w[l] -= self.d_w_prev[l]
+            self.theta[l] -= self.d_theta_prev[l]
 
     def fit(self, X, y):
         # Train the network using backpropagation
