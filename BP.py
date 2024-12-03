@@ -46,6 +46,25 @@ class NeuralNet:
     def tanh_derivative(self, z):
         return 1 - np.tanh(z)**2
 
+    def activation_function(self, z):
+        if self.fact == 'sigmoid':
+            return self.sigmoid(z)
+        elif self.fact == 'relu':
+            return self.relu(z)
+        elif self.fact == 'linear':
+            return self.linear(z)
+        elif self.fact == 'tanh':
+            return self.tanh(z)
+
+    def activation_derivative(self, z):
+        if self.fact == 'sigmoid':
+            return self.sigmoid_derivative(z)
+        elif self.fact == 'relu':
+            return self.relu_derivative(z)
+        elif self.fact == 'linear':
+            return self.linear_derivative(z)
+        elif self.fact == 'tanh':
+            return self.tanh_derivative(z)
     
     self.xi = []
     for lay in range(self.L):
