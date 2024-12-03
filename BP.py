@@ -11,15 +11,13 @@ class NeuralNet:
         self.validation_split = validation_split
         self.fact = activation_function
 
- # Initialize activations, weights, biases, and other necessary parameters
-        self.xi = [np.zeros((layer, 1)) for layer in layers]  # Activations
-        self.w = [np.random.randn(layers[i], layers[i-1]) * 0.01 for i in range(1, self.L)]  # Weights
-        self.theta = [np.zeros((layer, 1)) for layer in layers[1:]]  # Biases
-        self.delta = [np.zeros((layer, 1)) for layer in layers[1:]]  # Error terms
-        self.d_w = [np.zeros_like(w) for w in self.w]  # Weight changes
-        self.d_theta = [np.zeros_like(t) for t in self.theta]  # Bias changes
-        self.d_w_prev = [np.zeros_like(w) for w in self.w]  # Previous weight changes (for momentum)
-        self.d_theta_prev = [np.zeros_like(t) for t in self.theta]  # Previous bias changes (for momentum)
+ # Initialize activations, weights, biases, and error terms
+        self.xi = [np.zeros((layer, 1)) for layer in layers]  # Activations (ξ)
+        self.w = [np.random.randn(layers[i], layers[i - 1]) * 0.01 for i in range(1, self.L)]  # Weights (w)
+        self.theta = [np.zeros((layer, 1)) for layer in layers[1:]]  # Thresholds (biases θ)
+        self.delta = [np.zeros((layer, 1)) for layer in layers[1:]]  # Error terms (Δ)
+        self.d_w_prev = [np.zeros_like(w) for w in self.w]  # Previous weight changes
+        self.d_theta_prev = [np.zeros_like(t) for t in self.theta]  # Previous bias changes
 
     def sigmoid(self, z):
         return 1 / (1 + np.exp(-z))
