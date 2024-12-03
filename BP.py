@@ -128,3 +128,20 @@ class NeuralNet:
             val_losses.append(val_loss)
 
         return np.array(train_losses), np.array(val_losses)
+
+# Example usage
+layers = [4, 9, 5, 1]  # Example: 4 input features, 9 hidden neurons, 5 hidden neurons, 1 output neuron
+nn = NeuralNet(layers)
+
+# Example input (4 features, 5 samples)
+X = np.random.randn(4, 5)
+
+# Example output (1 target value per sample)
+y = np.random.randn(1, 5)
+
+# Train the network
+nn.fit(X, y)
+
+# Predict on new data
+predictions = nn.predict(X)
+print(predictions)
