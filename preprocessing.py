@@ -18,6 +18,9 @@ print(df_original.head())
 # Show the columns
 df_original.columns
 
+# Show type of objects in the dataset
+df.info()
+
 # Show mean, median, min and max values
 print(df_original.describe().loc[['mean', '50%', 'min', 'max']])
 
