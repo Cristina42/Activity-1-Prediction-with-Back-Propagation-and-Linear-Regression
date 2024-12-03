@@ -7,6 +7,8 @@ import seaborn as sns
 from sklearn.preprocessing import LabelEncoder
 from scipy import stats
 from sklearn.preprocessing import MinMaxScaler
+import pandas as pd
+from sklearn.model_selection import train_test_split
 
 # Read the dataset
 df_original = pd.read_csv('data.csv')
@@ -224,6 +226,19 @@ plt.show()
 # Save preprocessed dataset to a new CSV file
 df_normalized.to_csv('preprocessed_dataset.csv', index=False)
 
-## TO DO: Select randomly 80% of the patterns for training and validation, and the remaining
-## 20% for test; it is important to shuffle the original data, to destroy any kind of
-## sorting it could have.
+# Select randomly 80% of the patterns for training and validation, and the remaining 20% for test
+
+# Step 1: Separate input features (X) and output feature (y)
+X = df_normalized.drop(columns=["Life expectancy "])  # Input features
+y = df_normalized["Life expectancy "]  # Output feature
+
+# Step 2: Split the data into 80% training/validation and 20% test
+X_train_val, X_test, y_train_val, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, shuffle=True
+)
+
+# Step 3: Check the resulting shapes
+print("Training+Validation set (X):", X_train_val.shape)
+print("Test set (X):", X_test.shape)
+print("Training+Validation set (y):", y_train_val.shape)
+print("Test set (y):", y_test.shape)
