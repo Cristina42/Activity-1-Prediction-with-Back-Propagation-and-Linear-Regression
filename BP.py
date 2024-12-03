@@ -1,7 +1,6 @@
 import numpy as np
 
 class NeuralNet:
-  class NeuralNet:
     def __init__(self, layers, epochs=1000, learning_rate=0.01, momentum=0.9, activation_function='relu', validation_split=0.2):
         self.L = len(layers)  # Number of layers
         self.n = layers  # Number of neurons in each layer (including input and output layers)
@@ -30,6 +29,24 @@ class NeuralNet:
 
     def linear_derivative(self, z):
         return np.ones_like(z)
+
+    def activation_function(self, z, is_output_layer=False):
+        """
+        Applies ReLU for hidden layers and Linear for the output layer.
+        """
+        if is_output_layer:
+            return self.linear(z)  # Linear activation for output layer
+        else:
+            return self.relu(z)  # ReLU for hidden layers
+
+    def activation_derivative(self, z, is_output_layer=False):
+        """
+        Derivative of activation functions: Linear for output, ReLU for hidden layers.
+        """
+        if is_output_layer:
+            return self.linear_derivative(z)
+        else:
+            return self.relu_derivative(z)
 
     def forward(self, X):
         self.xi[0] = X  # Set input data as the first layer activations
