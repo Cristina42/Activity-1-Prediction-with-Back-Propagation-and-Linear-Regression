@@ -100,25 +100,31 @@ class NeuralNet:
             self.d_w_prev[i] = self.d_w[i]
             self.d_theta_prev[i] = self.d_theta[i]
 
-    self.xi = []
-    for lay in range(self.L):
-      self.xi.append(np.zeros(layers[lay]))
+    def fit(self, X, y):
+        # Train the network using backpropagation
+        for epoch in range(self.epochs):
+            self.backpropagate(X, y)
+            if epoch % 100 == 0:
+                print(f"Epoch {epoch}/{self.epochs} completed.")
 
-    self.w = []
-    self.w.append(np.zeros((1, 1)))
-    for lay in range(1, self.L):
-      self.w.append(np.zeros((layers[lay], layers[lay - 1])))
+    def predict(self, X):
+        # Perform a forward pass and return the prediction
+        self.forward(X)
+        return self.xi[-1]
 
+    def loss_epochs(self, X_train, y_train, X_val, y_val):
+        train_losses = []
+        val_losses = []
 
-layers = [4, 9, 5, 1]
-nn = NeuralNet(layers)
+        for epoch in range(self.epochs):
+            self.fit(X_train, y_train)
+            train_pred = self.predict(X_train)
+            val_pred = self.predict(X_val)
 
-print("L = ", nn.L, end="\n")
-print("n = ", nn.n, end="\n")
+            train_loss = np.mean((train_pred - y_train) ** 2)  # Mean Squared Error for training set
+            val_loss = np.mean((val_pred - y_val) ** 2)  # Mean Squared Error for validation set
 
-print("xi = ", nn.xi, end="\n")
-print("xi[0] = ", nn.xi[0], end="\n")
-print("xi[1] = ", nn.xi[0], end="\n")
+            train_losses.append(train_loss)
+            val_losses.append(val_loss)
 
-print("wh = ", nn.w, end="\n")
-print("wh[1] = ", nn.w[1], end="\n")
+        return np.array(train_losses), np.array(val_losses)
