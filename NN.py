@@ -28,6 +28,25 @@ class NeuralNet:
         sig = self.sigmoid(z)
         return sig * (1 - sig)
 
+    def relu(self, z):
+        return np.maximum(0, z)
+
+    def relu_derivative(self, z):
+        return np.where(z > 0, 1, 0)
+
+    def linear(self, z):
+        return z
+
+    def linear_derivative(self, z):
+        return np.ones_like(z)
+
+    def tanh(self, z):
+        return np.tanh(z)
+
+    def tanh_derivative(self, z):
+        return 1 - np.tanh(z)**2
+
+    
     self.xi = []
     for lay in range(self.L):
       self.xi.append(np.zeros(layers[lay]))
