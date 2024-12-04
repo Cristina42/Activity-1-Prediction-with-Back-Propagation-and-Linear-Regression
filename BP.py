@@ -132,6 +132,20 @@ class NeuralNet:
             val_losses.append(val_loss)
 
         return np.array(train_losses), np.array(val_losses)
+        
+def load_data(train_data, test_data):
+    # Load data using pandas
+    train_df = pd.read_csv(train_data)
+    test_df = pd.read_csv(test_data)
+
+    # Convert to numpy arrays (ensure proper column selection if needed)
+    X_train = train_df.iloc[:, :-1].values.T  # Assume last column is the target variable
+    y_train = train_df.iloc[:, -1].values.T
+
+    X_test = test_df.iloc[:, :-1].values.T
+    y_test = test_df.iloc[:, -1].values.T
+
+    return X_train, y_train, X_test, y_test
 
 # Example usage
 layers = [4, 9, 5, 1]  # Example: 4 input features, 9 hidden neurons, 5 hidden neurons, 1 output neuron
@@ -149,3 +163,10 @@ nn.fit(X, y)
 # Predict on new data
 predictions = nn.predict(X)
 print(predictions) 
+
+# Calculate MSE, MAPE, and MAE
+mse = np.mean((predictions - y_test) ** 2)
+mae = np.mean(np.abs(predictions - y_test))
+mape = np.mean(np.abs((predictions - y_test) / y_test)) * 100
+
+print(f'MSE: {mse:.4f}, MAE: {mae:.4f}, MAPE: {mape:.4f}%')
