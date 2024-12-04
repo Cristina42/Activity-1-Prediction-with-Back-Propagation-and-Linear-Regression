@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 
 class NeuralNet:
     def __init__(self, layers, epochs=1000, learning_rate=0.01, momentum=0.9, activation_function='relu', validation_split=0.2):
