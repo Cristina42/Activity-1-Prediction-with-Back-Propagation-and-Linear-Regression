@@ -135,16 +135,16 @@ class NeuralNet:
         return np.array(train_losses), np.array(val_losses)
         
 def load_data(train_data, test_data):
-    # Load data using pandas
-    train_df = pd.read_csv(train_data)
-    test_df = pd.read_csv(test_data)
+    # Load the training and testing data
+    train = np.genfromtxt(train_data, delimiter=',', skip_header=1)  # Skips header
+    test = np.genfromtxt(test_data, delimiter=',', skip_header=1)    # Skips header
 
-    # Convert to numpy arrays (ensure proper column selection if needed)
-    X_train = train_df.iloc[:, :-1].values.T  # Assume last column is the target variable
-    y_train = train_df.iloc[:, -1].values.T
+    # Assuming target variable is in the fourth column (index 3) --> check this
+    X_train = train[:, :-1].T  # Features for training (all columns except the last one)
+    y_train = train[:, 3].T    # Target for training (fourth column, index 3)
 
-    X_test = test_df.iloc[:, :-1].values.T
-    y_test = test_df.iloc[:, -1].values.T
+    X_test = test[:, :-1].T    # Features for testing (all columns except the last one)
+    y_test = test[:, 3].T      # Target for testing (fourth column, index 3)
 
     return X_train, y_train, X_test, y_test
 
