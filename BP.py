@@ -135,39 +135,31 @@ class NeuralNet:
         return np.array(train_losses), np.array(val_losses)
         
 def load_data(train_data, test_data):
-    # Load the training and testing data
-    train = np.genfromtxt(train_data, delimiter=',', skip_header=1)  # Skips header
-    test = np.genfromtxt(test_data, delimiter=',', skip_header=1)    # Skips header
+    train = pd.read_csv(train_data)
+    test = pd.read_csv(test_data)
 
-    # Assuming target variable is in the fourth column (index 3) --> check this
-    X_train = train[:, :-1].T  # Features for training (all columns except the last one)
-    y_train = train[:, 3].T    # Target for training (fourth column, index 3)
-
-    X_test = test[:, :-1].T    # Features for testing (all columns except the last one)
-    y_test = test[:, 3].T      # Target for testing (fourth column, index 3)
-
+    X_train = train.iloc[:, :-1].values
+    y_train = train.iloc[:, 3].values  # Life expectancy (4th column)
+    X_test = test.iloc[:, :-1].values
+    y_test = test.iloc[:, 3].values  # Life expectancy (4th column)
+    
     return X_train, y_train, X_test, y_test
 
 # Example usage
-layers = [4, 9, 5, 1]  # Example: 4 input features, 9 hidden neurons, 5 hidden neurons, 1 output neuron
+X_train, y_train, X_test, y_test = load_data('train_data.csv', 'test_data.csv')
+
+layers = [4, 9, 5, 1]
 nn = NeuralNet(layers)
 
-# Example input (4 features, 5 samples)
-X = np.random.randn(4, 5)
+# Train the model
+nn.fit(X_train.T, y_train.T)
 
-# Example output (1 target value per sample)
-y = np.random.randn(1, 5)
+# Predict on the test set
+predictions = nn.predict(X_test.T)
 
-# Train the network
-nn.fit(X, y)
+# Calculate MSE, MAE, MAPE
+mse = np.mean((predictions - y_test.T) ** 2)
+mae = np.mean(np.abs(predictions - y_test.T))
+mape = np.mean(np.abs((predictions - y_test.T) / y_test.T)) * 100
 
-# Predict on new data
-predictions = nn.predict(X)
-print(predictions) 
-
-# Calculate MSE, MAPE, and MAE
-mse = np.mean((predictions - y_test) ** 2)
-mae = np.mean(np.abs(predictions - y_test))
-mape = np.mean(np.abs((predictions - y_test) / y_test)) * 100
-
-print(f'MSE: {mse:.4f}, MAE: {mae:.4f}, MAPE: {mape:.4f}%')
+print(f'MSE: {mse:.4f}, MAE: {mae:.4f}, MAPE: {mape:.4f}')
