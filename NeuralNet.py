@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler, OneHotEncoder
 
@@ -132,3 +133,12 @@ print(f"Test MSE: {mse:.4f}")
 print("\nSample predictions vs actual values:")
 for i in range(5):
     print(f"Predicted: {predictions.flatten()[i]:.4f}, Actual: {y_test.iloc[i]:.4f}")      
+
+plt.figure(figsize=(8, 6))
+plt.scatter(y_test, predictions.flatten(), alpha=0.7)
+plt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], color='red', linestyle='--', linewidth=2)
+plt.xlabel('Actual Values')
+plt.ylabel('Predicted Values')
+plt.title('Actual vs Predicted Life Expectancy')
+plt.grid(True)
+plt.show()
