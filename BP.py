@@ -123,6 +123,7 @@ class NeuralNet:
 
         return np.array(train_losses), np.array(val_losses)
 
+# Scaling and Descaling Functions
 def scale(data, s_min=0, s_max=1):
     """Scale data to a given range [s_min, s_max]"""
     x_min = np.min(data, axis=0)
@@ -134,6 +135,7 @@ def descale(scaled_data, x_min, x_max, s_min=0, s_max=1):
     """Inverse scale transformation to return data to its original range"""
     return x_min + (x_max - x_min) * (scaled_data - s_min) / (s_max - s_min)
 
+# Load and preprocess data
 def load_data(train_data, test_data, validation_split=0.2):
     # Load data from CSV files
     train = pd.read_csv(train_data)
@@ -156,7 +158,7 @@ def load_data(train_data, test_data, validation_split=0.2):
     y_train_scaled, y_min, y_max = scale(y_train, s_min=0, s_max=1)
     y_test_scaled = (y_test - y_min) / (y_max - y_min)  # Scale test data using train min/max
 
-    # Scale features (X) as well (if needed, but in your case, it was done earlier)
+    # Scale features (X)
     X_train_scaled, x_min, x_max = scale(X_train, s_min=0, s_max=1)
     X_test_scaled = (X_test - x_min) / (x_max - x_min)
 
