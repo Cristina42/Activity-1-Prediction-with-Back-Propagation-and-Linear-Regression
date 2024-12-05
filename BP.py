@@ -63,17 +63,12 @@ class NeuralNet:
         return activation_deriv(z) if not is_output_layer else self.linear_derivative(z)
 
     def forward(self, X):
-        """
-        Perform feed-forward propagation using h (fields) and xi (activations).
-        """
         self.xi[0] = X  # Input layer activations
         for l in range(1, self.L - 1):  # Hidden layers
             z = np.dot(self.w[l - 1], self.xi[l - 1]) + self.theta[l - 1]
-            self.xi[l] = self.activation_function(z)  # Apply ReLU
-
-        # Output layer
+            self.xi[l] = self.activation_function(z)
         z_output = np.dot(self.w[-1], self.xi[-2]) + self.theta[-1]
-        self.xi[-1] = self.activation_function(z_output, is_output_layer=True)  # Apply Linear
+        self.xi[-1] = self.activation_function(z_output, is_output_layer=True)
 
     def backpropagate(self, X, y):
         self.forward(X)
