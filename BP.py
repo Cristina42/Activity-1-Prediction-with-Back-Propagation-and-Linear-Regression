@@ -164,7 +164,7 @@ mape = np.mean(np.abs((predictions - y_test) / y_test)) * 100
 
 print(f"MSE: {mse:.4f}, MAE: {mae:.4f}, MAPE: {mape:.4f}")
 
-# Define a list of hyperparameter combinations
+# Define a list of hyperparameter combinations (increase number of epochs, small number of epochs was used to check if it works)
 combinations = [
     {'layers': [14, 9, 1], 'epochs': 100, 'learning_rate': 0.01, 'momentum': 0.9, 'activation': 'relu'},
     {'layers': [14, 16, 8, 1], 'epochs': 100, 'learning_rate': 0.001, 'momentum': 0.8, 'activation': 'tanh'},
