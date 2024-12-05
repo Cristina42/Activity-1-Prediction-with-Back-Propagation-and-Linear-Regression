@@ -103,15 +103,16 @@ class NeuralNet:
             self.theta[l-1] -= (self.learning_rate / m) * np.sum(self.delta[l], axis=1, keepdims=True)
 
 
-    def fit(self, X, y, epochs, learning_rate):
+    def fit(self, X, y):
+        for epoch in range(self.epochs):
+            self.forward_propagation(X)
+            self.backward_propagation(y)
 
-        for epoch in range(epochs):
-            self.backward_propagation(X, y, learning_rate)
+            # Calculate loss for monitoring
             if epoch % 10 == 0:
-                predictions = self.forward_propagation(X)
-                loss = np.mean((predictions - y.values.reshape(-1, 1)) ** 2)
+                loss = np.mean((self.xi[-1].T - y) ** 2)
                 print(f"Epoch {epoch}, Loss: {loss:.4f}")
-
+                
     def predict(self, X):
         return self.forward_propagation(X)
 
