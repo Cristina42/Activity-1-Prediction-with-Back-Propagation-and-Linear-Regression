@@ -53,9 +53,21 @@ class NeuralNet:
     for lay in range(1, self.L):
       self.w.append(np.zeros((layers[lay], layers[lay - 1])))
 
+    def forward_propagation(self, X):
+
+        A = X.T  
+        for l in range(len(self.w)):
+            Z = np.dot(self.w[l], A) 
+            A = np.maximum(0, Z) if l < len(self.w) - 1 else Z  
+        return A.T
+
+
+
+
 
 layers = [4, 9, 5, 1]
 nn = NeuralNet(layers)
+
 
 print("L = ", nn.L, end="\n")
 print("n = ", nn.n, end="\n")
