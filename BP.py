@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 
 class NeuralNet:
-    def __init__(self, layers, epochs=1000, learning_rate=0.01, momentum=0.9, activation_function='relu'):
+    def __init__(self, layers, epochs, learning_rate, momentum, activation_function):
         self.L = len(layers)  # Number of layers
         self.n = layers  # Number of neurons in each layer (including input and output layers)
         self.epochs = epochs
