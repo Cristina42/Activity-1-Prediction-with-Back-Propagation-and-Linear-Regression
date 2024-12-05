@@ -155,7 +155,7 @@ def load_data(train_data, test_data, validation_split=0.2):
 # Main Code
 X_train, y_train, X_val, y_val, X_test, y_test, x_min, x_max, y_min, y_max = load_data('train_data.csv', 'test_data.csv', validation_split=0.2)
 layers = [14, 19, 10, 1]
-nn = NeuralNet(layers, epochs=100, learning_rate=0.001, activation_function='tanh')  # check for this specific combination what result is
+nn = NeuralNet(layers, epochs=100, learning_rate=0.001, momentum=0.9, activation_function='tanh')  # check for this specific combination what result is
 
 # Call loss_epochs() correctly
 train_losses, val_losses = nn.loss_epochs(X_train.T, y_train.T, X_val.T, y_val.T)
