@@ -229,7 +229,7 @@ def evaluate_combinations():
 
         # Predict the output on the test set
         predictions_scaled = nn.predict(X_test.T)
-        predictions = descale(predictions_scaled, y_min, y_max)  # Descale predictions
+        predictions = destandardize(predictions_scaled, y_mean, y_std)
 
         # Calculate and print metrics for MSE, MAE, and MAPE
         mse, mae, mape = calculate_metrics(predictions, y_test)
