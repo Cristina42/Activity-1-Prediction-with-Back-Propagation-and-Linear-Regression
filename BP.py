@@ -168,7 +168,7 @@ def load_data(train_data, test_data, validation_split=0.2):
 X_train, y_train, X_val, y_val, X_test, y_test, y_min, y_max = load_data('traindata.csv', 'testdata.csv', validation_split=0.2)
 
 layers = [14, 19, 10, 1]
-nn = NeuralNet(layers, epochs=100, learning_rate=0.0001, momentum=0.9, activation_function='tanh')  # Lower learning rate
+nn = NeuralNet(layers, epochs=100, learning_rate=0.0001, momentum=0.9, activation_function='tanh')  
 
 # Call loss_epochs() correctly
 train_losses, val_losses = nn.loss_epochs(X_train.T, y_train.T, X_val.T, y_val.T)
