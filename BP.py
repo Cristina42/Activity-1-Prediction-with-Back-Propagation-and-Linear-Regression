@@ -143,14 +143,6 @@ def load_data(train_data, test_data, validation_split=0.2):
     X_test = test.iloc[:, :-1].values
     y_test = test.iloc[:, -1].values
 
-    # Scale features (X)
-    X_train_val, x_min, x_max = scale(X_train_val, s_min=0, s_max=1)
-    X_test = (X_test - x_min) / (x_max - x_min)  # Apply the same scaling for test data
-
-    # Scale target (y)
-    y_train_val, y_min, y_max = scale(y_train_val.reshape(-1, 1), s_min=0, s_max=1)
-    y_test = (y_test.reshape(-1, 1) - y_min) / (y_max - y_min)  # Apply the same scaling for test target
-
     # Split training and validation data
     validation_size = int(len(X_train_val) * validation_split)
     X_train = X_train_val[validation_size:]
