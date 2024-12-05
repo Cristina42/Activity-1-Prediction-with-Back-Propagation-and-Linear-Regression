@@ -61,6 +61,14 @@ class NeuralNet:
             A = np.maximum(0, Z) if l < len(self.w) - 1 else Z  
         return A.T
 
+    def backward_propagation(self, X, y, learning_rate):
+    
+        A = self.forward_propagation(X)
+        dA = A.T - y.values.reshape(-1, 1)
+        for l in reversed(range(len(self.w))):
+            dW = np.dot(dA, X)  
+            self.w[l] -= learning_rate * dW
+
 
 
 
