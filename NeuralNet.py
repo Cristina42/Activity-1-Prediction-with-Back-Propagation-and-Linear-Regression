@@ -79,11 +79,10 @@ class NeuralNet:
 
     def forward_propagation(self, X):
 
-        A = X.T  
-        for l in range(len(self.w)):
-            Z = np.dot(self.w[l], A) 
-            A = np.maximum(0, Z) if l < len(self.w) - 1 else Z  
-        return A.T
+        self.xi[0] = X.T  
+        for l in range(1, self.L):
+            Z = np.dot(self.w[l-1], self.xi[l-1]) - self.theta[l-1]  
+            self.xi[l] = self.activation_function(Z) 
 
     def backward_propagation(self, X, y, learning_rate):
     
