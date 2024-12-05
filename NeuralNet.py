@@ -14,16 +14,16 @@ if 'Country' in data.columns:
     data = data.drop(columns=['Country'])
 
 # Encode the 'Status' column
-encoder = OneHotEncoder(sparse_output=False, drop='first')  # Convert 'Status' to numbers
-status_encoded = encoder.fit_transform(data[['Status']])  # One-hot encoding
-status_columns = encoder.get_feature_names_out(['Status'])  # Get new column names
-status_df = pd.DataFrame(status_encoded, columns=status_columns)  # Create a DataFrame
-data = pd.concat([data.drop(columns=['Status']).reset_index(drop=True), status_df], axis=1)  # Add encoded columns
+encoder = OneHotEncoder(sparse_output=False, drop='first')  
+status_encoded = encoder.fit_transform(data[['Status']]) 
+status_columns = encoder.get_feature_names_out(['Status'])  
+status_df = pd.DataFrame(status_encoded, columns=status_columns) 
+data = pd.concat([data.drop(columns=['Status']).reset_index(drop=True), status_df], axis=1) 
 
 # Normalize the data
 scaler = MinMaxScaler()
-numerical_columns = data.select_dtypes(include=['float64', 'int64']).columns  # Select numerical columns
-data[numerical_columns] = scaler.fit_transform(data[numerical_columns])  # Normalize the data
+numerical_columns = data.select_dtypes(include=['float64', 'int64']).columns  
+data[numerical_columns] = scaler.fit_transform(data[numerical_columns])  
 
 # Save the processed data to a new CSV file
 data.to_csv('Processed_Life_Expectancy_Data.csv', index=False)
@@ -40,18 +40,42 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 print(f"Training set size: {X_train.shape[0]}, Test set size: {X_test.shape[0]}")
 
 class NeuralNet:
-  def __init__(self, layers):
-    self.L = len(layers)
-    self.n = layers.copy()
+    def __init__(self, layers, learning_rate=0.01, epochs=100, activation='sigmoid'):
+        self.L = len(layers)  
+        self.n = layers  
+        self.learning_rate = learning_rate
+        self.epochs = epochs
 
-    self.xi = []
-    for lay in range(self.L):
-      self.xi.append(np.zeros(layers[lay]))
+      
+        self.w = [np.random.randn(layers[l], layers[l-1]) * 0.01 for l in range(1, self.L)]
+        self.theta = [np.zeros((layers[l], 1)) for l in range(1, self.L)]
+        self.xi = [np.zeros((layers[l], 1)) for l in range(self.L)]
+        self.delta = [np.zeros((layers[l], 1)) for l in range(self.L)]
 
-    self.w = []
-    self.w.append(np.zeros((1, 1)))
-    for lay in range(1, self.L):
-      self.w.append(np.zeros((layers[lay], layers[lay - 1])))
+       
+        if activation == 'sigmoid':
+            self.activation_function = self.sigmoid
+            self.activation_derivative = self.sigmoid_derivative
+        elif activation == 'relu':
+            self.activation_function = self.relu
+            self.activation_derivative = self.relu_derivative
+        else:
+            raise ValueError("Activation function must be 'sigmoid' or 'relu'.")
+
+   
+    def sigmoid(self, x):
+        return 1 / (1 + np.exp(-x))
+
+    def sigmoid_derivative(self, x):
+        sig = self.sigmoid(x)
+        return sig * (1 - sig)
+
+    def relu(self, x):
+        return np.maximum(0, x)
+
+    def relu_derivative(self, x):
+        return np.where(x > 0, 1, 0)
+
 
     def forward_propagation(self, X):
 
@@ -77,6 +101,10 @@ class NeuralNet:
                 predictions = self.forward_propagation(X)
                 loss = np.mean((predictions - y.values.reshape(-1, 1)) ** 2)
                 print(f"Epoch {epoch}, Loss: {loss:.4f}")
+
+    def predict(self, X):
+        return self.forward_propagation(X)
+
 
 
 # print("L = ", nn.L, end="\n")
