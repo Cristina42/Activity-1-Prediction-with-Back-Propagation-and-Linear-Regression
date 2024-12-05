@@ -123,8 +123,16 @@ class NeuralNet:
 
         return np.array(train_losses), np.array(val_losses)
 
-def descale(scaled_data, y_min, y_max):
-    return scaled_data * (y_max - y_min) + y_min
+def scale(data, s_min=0, s_max=1):
+    """Scale data to a given range [s_min, s_max]"""
+    x_min = np.min(data, axis=0)
+    x_max = np.max(data, axis=0)
+    scaled_data = s_min + (s_max - s_min) * (data - x_min) / (x_max - x_min)
+    return scaled_data, x_min, x_max
+
+def descale(scaled_data, x_min, x_max, s_min=0, s_max=1):
+    """Inverse scale transformation to return data to its original range"""
+    return x_min + (x_max - x_min) * (scaled_data - s_min) / (s_max - s_min)
 
 def load_data(train_data, test_data, validation_split=0.2):
     # Load data from CSV files
@@ -144,7 +152,15 @@ def load_data(train_data, test_data, validation_split=0.2):
     X_val = X_train_val[:validation_size]
     y_val = y_train_val[:validation_size]
 
-    return X_train, y_train.flatten(), X_val, y_val.flatten(), X_test, y_test.flatten(), x_min, x_max, y_min, y_max
+    # Scale the target variable (y)
+    y_train_scaled, y_min, y_max = scale(y_train, s_min=0, s_max=1)
+    y_test_scaled = (y_test - y_min) / (y_max - y_min)  # Scale test data using train min/max
+
+    # Scale features (X) as well (if needed, but in your case, it was done earlier)
+    X_train_scaled, x_min, x_max = scale(X_train, s_min=0, s_max=1)
+    X_test_scaled = (X_test - x_min) / (x_max - x_min)
+
+    return X_train_scaled, y_train_scaled, X_val, y_val, X_test_scaled, y_test_scaled, y_min, y_max
         
 # Main Code
 X_train, y_train, X_val, y_val, X_test, y_test, x_min, x_max, y_min, y_max = load_data('train_data.csv', 'test_data.csv', validation_split=0.2)
