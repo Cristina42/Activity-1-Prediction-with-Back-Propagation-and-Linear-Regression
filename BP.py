@@ -51,24 +51,16 @@ class NeuralNet:
 
     def tanh_derivative(self, z):
         return 1 - np.tanh(z) ** 2
-
+    
     def activation_function(self, z, is_output_layer=False):
-        """
-        Applies ReLU for hidden layers and Linear for the output layer.
-        """
-        if is_output_layer:
-            return self.linear(z)  # Linear activation for output layer
-        else:
-            return self.relu(z)  # ReLU for hidden layers
+        # Dynamically choose the activation function based on the one set in self.fact
+        activation_func, _ = self.activations[self.fact]
+        return activation_func(z) if not is_output_layer else self.linear(z)  # Linear activation for the output layer
 
     def activation_derivative(self, z, is_output_layer=False):
-        """
-        Derivative of activation functions: Linear for output, ReLU for hidden layers.
-        """
-        if is_output_layer:
-            return self.linear_derivative(z)
-        else:
-            return self.relu_derivative(z)
+        # Dynamically choose the activation derivative based on the one set in self.fact
+        _, activation_deriv = self.activations[self.fact]
+        return activation_deriv(z) if not is_output_layer else self.linear_derivative(z)
 
     def forward(self, X):
         """
