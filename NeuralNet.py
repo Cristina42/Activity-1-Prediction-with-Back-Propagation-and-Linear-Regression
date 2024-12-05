@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler, OneHotEncoder
 
@@ -38,32 +39,30 @@ y = data['Life expectancy ']  # Target variable
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, shuffle=True)
 print(f"Training set size: {X_train.shape[0]}, Test set size: {X_test.shape[0]}")
 
+class NeuralNet:
+  def __init__(self, layers):
+    self.L = len(layers)
+    self.n = layers.copy()
+
+    self.xi = []
+    for lay in range(self.L):
+      self.xi.append(np.zeros(layers[lay]))
+
+    self.w = []
+    self.w.append(np.zeros((1, 1)))
+    for lay in range(1, self.L):
+      self.w.append(np.zeros((layers[lay], layers[lay - 1])))
 
 
-# class NeuralNet:
-#   def __init__(self, layers):
-#     self.L = len(layers)
-#     self.n = layers.copy()
+layers = [4, 9, 5, 1]
+nn = NeuralNet(layers)
 
-#     self.xi = []
-#     for lay in range(self.L):
-#       self.xi.append(np.zeros(layers[lay]))
+print("L = ", nn.L, end="\n")
+print("n = ", nn.n, end="\n")
 
-#     self.w = []
-#     self.w.append(np.zeros((1, 1)))
-#     for lay in range(1, self.L):
-#       self.w.append(np.zeros((layers[lay], layers[lay - 1])))
+print("xi = ", nn.xi, end="\n")
+print("xi[0] = ", nn.xi[0], end="\n")
+print("xi[1] = ", nn.xi[0], end="\n")
 
-
-# layers = [4, 9, 5, 1]
-# nn = NeuralNet(layers)
-
-# print("L = ", nn.L, end="\n")
-# print("n = ", nn.n, end="\n")
-
-# print("xi = ", nn.xi, end="\n")
-# print("xi[0] = ", nn.xi[0], end="\n")
-# print("xi[1] = ", nn.xi[0], end="\n")
-
-# print("wh = ", nn.w, end="\n")
-# print("wh[1] = ", nn.w[1], end="\n")
+print("wh = ", nn.w, end="\n")
+print("wh[1] = ", nn.w[1], end="\n")
