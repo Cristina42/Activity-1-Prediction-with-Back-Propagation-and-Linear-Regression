@@ -191,5 +191,5 @@ train_data = pd.concat([X_train_val, y_train_val], axis=1)  # Concatenate X and 
 test_data = pd.concat([X_test, y_test], axis=1)  # Concatenate X and y for testing
 
 # Save the data to CSV files
-train_data.to_csv('train_data.csv', index=False)  # Save the training data
-test_data.to_csv('test_data.csv', index=False)  # Save the test data
+train_data.to_csv('traindata.csv', index=False)  # Save the training data
+test_data.to_csv('testdata.csv', index=False)  # Save the test data
