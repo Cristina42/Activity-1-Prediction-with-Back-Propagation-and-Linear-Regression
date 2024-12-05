@@ -1,29 +1,59 @@
-import numpy as np
+import pandas as pd
+from sklearn.preprocessing import MinMaxScaler, OneHotEncoder
 
-class NeuralNet:
-  def __init__(self, layers):
-    self.L = len(layers)
-    self.n = layers.copy()
+# Load the dataset
+data = pd.read_csv('Life Expectancy Data.csv')
 
-    self.xi = []
-    for lay in range(self.L):
-      self.xi.append(np.zeros(layers[lay]))
+# Remove rows with missing data
+data = data.dropna()
 
-    self.w = []
-    self.w.append(np.zeros((1, 1)))
-    for lay in range(1, self.L):
-      self.w.append(np.zeros((layers[lay], layers[lay - 1])))
+# Drop the 'Country' column if it exists
+if 'Country' in data.columns:
+    data = data.drop(columns=['Country'])
+
+# Encode the 'Status' column
+encoder = OneHotEncoder(sparse_output=False, drop='first')  # Convert 'Status' to numbers
+status_encoded = encoder.fit_transform(data[['Status']])  # One-hot encoding
+status_columns = encoder.get_feature_names_out(['Status'])  # Get new column names
+status_df = pd.DataFrame(status_encoded, columns=status_columns)  # Create a DataFrame
+data = pd.concat([data.drop(columns=['Status']).reset_index(drop=True), status_df], axis=1)  # Add encoded columns
+
+# Normalize the data
+scaler = MinMaxScaler()
+numerical_columns = data.select_dtypes(include=['float64', 'int64']).columns  # Select numerical columns
+data[numerical_columns] = scaler.fit_transform(data[numerical_columns])  # Normalize the data
+
+# Save the processed data to a new CSV file
+data.to_csv('Processed_Life_Expectancy_Data.csv', index=False)
+
+print("Preprocessing complete. Processed data saved to 'Processed_Life_Expectancy_Data.csv'.")
 
 
-layers = [4, 9, 5, 1]
-nn = NeuralNet(layers)
 
-print("L = ", nn.L, end="\n")
-print("n = ", nn.n, end="\n")
+# class NeuralNet:
+#   def __init__(self, layers):
+#     self.L = len(layers)
+#     self.n = layers.copy()
 
-print("xi = ", nn.xi, end="\n")
-print("xi[0] = ", nn.xi[0], end="\n")
-print("xi[1] = ", nn.xi[0], end="\n")
+#     self.xi = []
+#     for lay in range(self.L):
+#       self.xi.append(np.zeros(layers[lay]))
 
-print("wh = ", nn.w, end="\n")
-print("wh[1] = ", nn.w[1], end="\n")
+#     self.w = []
+#     self.w.append(np.zeros((1, 1)))
+#     for lay in range(1, self.L):
+#       self.w.append(np.zeros((layers[lay], layers[lay - 1])))
+
+
+# layers = [4, 9, 5, 1]
+# nn = NeuralNet(layers)
+
+# print("L = ", nn.L, end="\n")
+# print("n = ", nn.n, end="\n")
+
+# print("xi = ", nn.xi, end="\n")
+# print("xi[0] = ", nn.xi[0], end="\n")
+# print("xi[1] = ", nn.xi[0], end="\n")
+
+# print("wh = ", nn.w, end="\n")
+# print("wh[1] = ", nn.w[1], end="\n")
