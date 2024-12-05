@@ -16,7 +16,7 @@ class NeuralNet:
         self.theta = [np.zeros((layer, 1)) for layer in layers[1:]]  # Thresholds (biases θ)
         self.delta = [np.zeros((layer, 1)) for layer in layers[1:]]  # Error terms (Δ)
         self.d_w_prev = [np.zeros_like(w) for w in self.w]  # Previous weight changes
-        self.d_theta_prev = [np.zeros_like(t) for t in self.theta]  # Previous bias changes
+        self.d_theta_prev = [np.zeros_like(t) for t in self.theta]  # Previous bias changes 
 
     # Activation functions and their derivatives
         self.activations = {
