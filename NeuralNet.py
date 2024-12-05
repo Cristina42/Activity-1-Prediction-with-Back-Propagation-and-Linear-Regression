@@ -1,4 +1,5 @@
 import pandas as pd
+from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler, OneHotEncoder
 
 # Load the dataset
@@ -27,6 +28,15 @@ data[numerical_columns] = scaler.fit_transform(data[numerical_columns])  # Norma
 data.to_csv('Processed_Life_Expectancy_Data.csv', index=False)
 
 print("Preprocessing complete. Processed data saved to 'Processed_Life_Expectancy_Data.csv'.")
+
+
+# Split dataset 
+X = data.drop(columns=['Life expectancy '])  # Features
+y = data['Life expectancy ']  # Target variable
+
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, shuffle=True)
+print(f"Training set size: {X_train.shape[0]}, Test set size: {X_test.shape[0]}")
 
 
 
