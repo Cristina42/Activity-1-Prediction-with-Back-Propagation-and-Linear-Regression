@@ -139,9 +139,9 @@ def load_data(train_data, test_data):
     test = pd.read_csv(test_data)
 
     X_train = train.iloc[:, :-1].values
-    y_train = train.iloc[:, 3].values  # Life expectancy (4th column)
+    y_train = train.iloc[:, -1].values  # Use the last column
     X_test = test.iloc[:, :-1].values
-    y_test = test.iloc[:, 3].values  # Life expectancy (4th column)
+   y_test = test.iloc[:, -1].values
     
     return X_train, y_train, X_test, y_test
 
