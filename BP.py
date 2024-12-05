@@ -2,13 +2,12 @@ import numpy as np
 import pandas as pd
 
 class NeuralNet:
-    def __init__(self, layers, epochs=1000, learning_rate=0.01, momentum=0.9, activation_function='relu', validation_split=0.2):
+    def __init__(self, layers, epochs=1000, learning_rate=0.01, momentum=0.9, activation_function='relu'):
         self.L = len(layers)  # Number of layers
         self.n = layers  # Number of neurons in each layer (including input and output layers)
         self.epochs = epochs
         self.learning_rate = learning_rate
         self.momentum = momentum
-        self.validation_split = validation_split
         self.fact = activation_function
 
  # Initialize activations, weights, biases, and error terms
