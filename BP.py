@@ -130,17 +130,6 @@ class NeuralNet:
 
         return np.array(train_losses), np.array(val_losses)
         
-def load_data(train_data, test_data):
-    train = pd.read_csv(train_data)
-    test = pd.read_csv(test_data)
-
-    X_train = train.iloc[:, :-1].values
-    y_train = train.iloc[:, -1].values  # Use the last column
-    X_test = test.iloc[:, :-1].values
-   y_test = test.iloc[:, -1].values
-    
-    return X_train, y_train, X_test, y_test
-
 # Main Code
 X_train, y_train, X_val, y_val, X_test, y_test, x_min, x_max, y_min, y_max = load_data('train_data.csv', 'test_data.csv', validation_split=0.2)
 layers = [14, 19, 10, 1]
