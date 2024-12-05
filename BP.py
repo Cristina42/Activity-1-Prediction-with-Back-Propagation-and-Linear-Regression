@@ -159,13 +159,16 @@ def load_data(train_data, test_data):
     return X_train_val, y_train_val, X_test, y_test
         
 # Main Code
-X_train, y_train, X_val, y_val, X_test, y_test, y_min, y_max = load_data('traindata.csv', 'testdata.csv', validation_split=0.2)
+X_train, y_train, X_test, y_test = load_data('traindata.csv', 'testdata.csv')
 
 layers = [14, 19, 10, 1]
-nn = NeuralNet(layers, epochs=100, learning_rate=0.0001, momentum=0.9, activation_function='tanh')  
+nn = NeuralNet(layers, epochs=100, learning_rate=0.0001, momentum=0.9, activation_function='tanh', validation_split=0.2)  
+
+# Split data within NeuralNet
+X_train_split, y_train_split, X_val, y_val = nn.split_data(X_train, y_train)
 
 # Call loss_epochs() correctly
-train_losses, val_losses = nn.loss_epochs(X_train.T, y_train.T, X_val.T, y_val.T)
+train_losses, val_losses = nn.loss_epochs(X_train_split.T, y_train_split.T, X_val.T, y_val.T)
 
 # Get predictions
 predictions_scaled = nn.predict(X_test.T)  # This would be the scaled predictions
