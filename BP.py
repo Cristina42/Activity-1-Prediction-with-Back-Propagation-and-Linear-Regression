@@ -133,56 +133,56 @@ class NeuralNet:
         y_val = y[:validation_size]
         return X_train, y_train, X_val, y_val
 
-# Scaling and Descaling Functions
-def scale(data, s_min=0, s_max=1):
-    """Scale data to a given range [s_min, s_max]"""
-    x_min = np.min(data, axis=0)
-    x_max = np.max(data, axis=0)
-    scaled_data = s_min + (s_max - s_min) * (data - x_min) / (x_max - x_min)
-    return scaled_data, x_min, x_max
+# Standardize Functions
+def standardize(data):
+    mean = np.mean(data, axis=0)
+    std = np.std(data, axis=0)
+    standardized_data = (data - mean) / std
+    return standardized_data, mean, std
 
-def descale(scaled_data, x_min, x_max, s_min=0, s_max=1):
-    """Inverse scale transformation to return data to its original range"""
-    return x_min + (x_max - x_min) * (scaled_data - s_min) / (s_max - s_min)
 
+def destandardize(data, mean, std):
+    return data * std + mean
+
+
+# Load Data
 def load_data(train_data, test_data):
-    # Load data from CSV files
     train = pd.read_csv(train_data)
     test = pd.read_csv(test_data)
 
-    # Separate features and target (assumes target is the last column)
-    X_train_val = train.iloc[:, :-1].values  # All columns except the last one (features)
-    y_train_val = train.iloc[:, -1].values   # Last column (target)
+    # Separate features and targets
+    X_train_val = train.iloc[:, :-1].values
+    y_train_val = train.iloc[:, -1].values
     X_test = test.iloc[:, :-1].values
     y_test = test.iloc[:, -1].values
 
-    # Scale the target variable (y)
-    y_train_scaled, y_min, y_max = scale(y_train_val, s_min=0, s_max=1)
-    y_test_scaled = (y_test - y_min) / (y_max - y_min)  # Scale test data using train min/max
+    # Standardize
+    X_train_std, X_mean, X_std = standardize(X_train_val)
+    X_test_std = (X_test - X_mean) / X_std
 
-    # Scale features (X)
-    X_train_scaled, x_min, x_max = scale(X_train_val, s_min=0, s_max=1)
-    X_test_scaled = (X_test - x_min) / (x_max - x_min)
+    y_train_std, y_mean, y_std = standardize(y_train_val)
+    y_test_std = (y_test - y_mean) / y_std
 
-    return X_train_scaled, y_train_scaled, X_test_scaled, y_test_scaled, y_min, y_max
-        
+    return X_train_std, y_train_std, X_test_std, y_test_std, y_mean, y_std
+
+
 # Main Code
-X_train, y_train, X_test, y_test, y_min, y_max = load_data('traindata.csv', 'testdata.csv')
+X_train, y_train, X_test, y_test, y_mean, y_std = load_data("traindata.csv", "testdata.csv")
 
 layers = [14, 19, 10, 1]
-nn = NeuralNet(layers, epochs=100, learning_rate=0.0001, momentum=0.9, activation_function='tanh', validation_split=0.2)  
+nn = NeuralNet(layers, epochs=10, learning_rate=0.001, momentum=0.9, activation_function="tanh", validation_split=0.2)
 
 # Split data within NeuralNet
 X_train_split, y_train_split, X_val, y_val = nn.split_data(X_train, y_train)
 
-# Call loss_epochs() correctly
+# Train
 train_losses, val_losses = nn.loss_epochs(X_train_split.T, y_train_split.T, X_val.T, y_val.T)
 
-# Get predictions
-predictions_scaled = nn.predict(X_test.T)  # This would be the scaled predictions
-predictions = descale(predictions_scaled, y_min, y_max)  # Reverse the scaling
+# Predict and destandardize
+predictions_std = nn.predict(X_test.T)
+predictions = destandardize(predictions_std, y_mean, y_std)
 
-# Evaluate performance
+# Evaluate
 mse = np.mean((predictions - y_test) ** 2)
 mae = np.mean(np.abs(predictions - y_test))
 mape = np.mean(np.abs((predictions - y_test) / y_test)) * 100
