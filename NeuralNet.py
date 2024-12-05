@@ -69,20 +69,22 @@ class NeuralNet:
             dW = np.dot(dA, X)  
             self.w[l] -= learning_rate * dW
 
+    def fit(self, X, y, epochs, learning_rate):
+
+        for epoch in range(epochs):
+            self.backward_propagation(X, y, learning_rate)
+            if epoch % 10 == 0:
+                predictions = self.forward_propagation(X)
+                loss = np.mean((predictions - y.values.reshape(-1, 1)) ** 2)
+                print(f"Epoch {epoch}, Loss: {loss:.4f}")
 
 
+# print("L = ", nn.L, end="\n")
+# print("n = ", nn.n, end="\n")
 
+# print("xi = ", nn.xi, end="\n")
+# print("xi[0] = ", nn.xi[0], end="\n")
+# print("xi[1] = ", nn.xi[0], end="\n")
 
-layers = [4, 9, 5, 1]
-nn = NeuralNet(layers)
-
-
-print("L = ", nn.L, end="\n")
-print("n = ", nn.n, end="\n")
-
-print("xi = ", nn.xi, end="\n")
-print("xi[0] = ", nn.xi[0], end="\n")
-print("xi[1] = ", nn.xi[0], end="\n")
-
-print("wh = ", nn.w, end="\n")
-print("wh[1] = ", nn.w[1], end="\n")
+# print("wh = ", nn.w, end="\n")
+# print("wh[1] = ", nn.w[1], end="\n")
