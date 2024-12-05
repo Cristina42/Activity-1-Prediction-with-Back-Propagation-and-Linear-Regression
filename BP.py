@@ -18,6 +18,14 @@ class NeuralNet:
         self.delta = [np.zeros((layer, 1)) for layer in layers[1:]]  # Error terms (Δ)
         self.d_w_prev = [np.zeros_like(w) for w in self.w]  # Previous weight changes
         self.d_theta_prev = [np.zeros_like(t) for t in self.theta]  # Previous bias changes
+
+    # Activation functions and their derivatives
+        self.activations = {
+            'sigmoid': (self.sigmoid, self.sigmoid_derivative),
+            'relu': (self.relu, self.relu_derivative),
+            'tanh': (self.tanh, self.tanh_derivative),
+            'linear': (self.linear, self.linear_derivative),
+        }
    
     def sigmoid(self, z):
         return 1 / (1 + np.exp(-z))
@@ -76,24 +84,25 @@ class NeuralNet:
         self.xi[-1] = self.activation_function(z_output, is_output_layer=True)  # Apply Linear
 
     def backpropagate(self, X, y):
-        """
-        Perform backpropagation and update weights and thresholds using momentum.
-        """
-        m = X.shape[1]  # Number of samples
-        self.forward(X)  # Forward pass
-
-        # Output layer error
+        self.forward(X)
+    
+    # Output layer error
         self.delta[-1] = (self.xi[-1] - y) * self.activation_derivative(self.xi[-1], is_output_layer=True)
-
-        # Backpropagate the error
+    
+    # Gradient clipping
+        max_grad_norm = 1.0  # Maximum gradient norm value
+        for l in range(self.L - 1):
+        # Clip the gradients to ensure they don't explode
+            self.delta[l] = np.clip(self.delta[l], -max_grad_norm, max_grad_norm)
+    
+    # Backpropagate the error to the hidden layers
         for l in range(self.L - 2, 0, -1):  # Hidden layers
             self.delta[l - 1] = np.dot(self.w[l].T, self.delta[l]) * self.activation_derivative(self.xi[l])
 
-        # Update weights and biases
+    # Update weights and biases
         for l in range(self.L - 1):
             self.d_w_prev[l] = self.learning_rate * np.dot(self.delta[l], self.xi[l].T) + self.momentum * self.d_w_prev[l]
             self.d_theta_prev[l] = self.learning_rate * np.sum(self.delta[l], axis=1, keepdims=True) + self.momentum * self.d_theta_prev[l]
-
             self.w[l] -= self.d_w_prev[l]
             self.theta[l] -= self.d_theta_prev[l]
 
