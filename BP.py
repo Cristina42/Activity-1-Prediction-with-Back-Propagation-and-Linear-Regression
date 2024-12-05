@@ -130,6 +130,9 @@ class NeuralNet:
 
         return np.array(train_losses), np.array(val_losses)
 
+def descale(scaled_data, y_min, y_max):
+    return scaled_data * (y_max - y_min) + y_min
+
 def load_data(train_data, test_data, validation_split=0.2):
     # Load data from CSV files
     train = pd.read_csv(train_data)
