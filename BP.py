@@ -129,6 +129,34 @@ class NeuralNet:
             val_losses.append(val_loss)
 
         return np.array(train_losses), np.array(val_losses)
+
+def load_data(train_data, test_data, validation_split=0.2):
+    # Load data from CSV files
+    train = pd.read_csv(train_data)
+    test = pd.read_csv(test_data)
+
+    # Separate features and target (assumes target is the last column)
+    X_train_val = train.iloc[:, :-1].values  # All columns except the last one (features)
+    y_train_val = train.iloc[:, -1].values   # Last column (target)
+    X_test = test.iloc[:, :-1].values
+    y_test = test.iloc[:, -1].values
+
+    # Scale features (X)
+    X_train_val, x_min, x_max = scale(X_train_val, s_min=0, s_max=1)
+    X_test = (X_test - x_min) / (x_max - x_min)  # Apply the same scaling for test data
+
+    # Scale target (y)
+    y_train_val, y_min, y_max = scale(y_train_val.reshape(-1, 1), s_min=0, s_max=1)
+    y_test = (y_test.reshape(-1, 1) - y_min) / (y_max - y_min)  # Apply the same scaling for test target
+
+    # Split training and validation data
+    validation_size = int(len(X_train_val) * validation_split)
+    X_train = X_train_val[validation_size:]
+    y_train = y_train_val[validation_size:]
+    X_val = X_train_val[:validation_size]
+    y_val = y_train_val[:validation_size]
+
+    return X_train, y_train.flatten(), X_val, y_val.flatten(), X_test, y_test.flatten(), x_min, x_max, y_min, y_max
         
 # Main Code
 X_train, y_train, X_val, y_val, X_test, y_test, x_min, x_max, y_min, y_max = load_data('train_data.csv', 'test_data.csv', validation_split=0.2)
