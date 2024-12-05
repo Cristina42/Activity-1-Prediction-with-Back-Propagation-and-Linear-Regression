@@ -106,7 +106,7 @@ class NeuralNet:
     def fit(self, X, y):
         for epoch in range(self.epochs):
             self.forward_propagation(X)
-            self.backward_propagation(y)
+            self.backward_propagation(X, y, self.learning_rate)  
 
             # Calculate loss for monitoring
             if epoch % 10 == 0:
@@ -114,16 +114,21 @@ class NeuralNet:
                 print(f"Epoch {epoch}, Loss: {loss:.4f}")
                 
     def predict(self, X):
-        return self.forward_propagation(X)
+        self.forward_propagation(X)
+        return self.xi[-1].T
+
+layers = [X_train.shape[1], 10, 5, 1] 
+
+nn = NeuralNet(layers=layers, learning_rate=0.01, epochs=100, activation='sigmoid')
+
+nn.fit(X_train.to_numpy(), y_train.to_numpy())
+
+predictions = nn.predict(X_test.to_numpy())
+
+mse = np.mean((predictions.flatten() - y_test.to_numpy()) ** 2)
+print(f"Test MSE: {mse:.4f}")
 
 
-
-# print("L = ", nn.L, end="\n")
-# print("n = ", nn.n, end="\n")
-
-# print("xi = ", nn.xi, end="\n")
-# print("xi[0] = ", nn.xi[0], end="\n")
-# print("xi[1] = ", nn.xi[0], end="\n")
-
-# print("wh = ", nn.w, end="\n")
-# print("wh[1] = ", nn.w[1], end="\n")
+print("\nSample predictions vs actual values:")
+for i in range(5):
+    print(f"Predicted: {predictions.flatten()[i]:.4f}, Actual: {y_test.iloc[i]:.4f}")      
