@@ -86,11 +86,22 @@ class NeuralNet:
 
     def backward_propagation(self, X, y, learning_rate):
     
-        A = self.forward_propagation(X)
-        dA = A.T - y.values.reshape(-1, 1)
-        for l in reversed(range(len(self.w))):
-            dW = np.dot(dA, X)  
-            self.w[l] -= learning_rate * dW
+        y = y.reshape(-1, 1)  
+        m = y.shape[0]  
+
+     
+        self.delta[-1] = (self.xi[-1] - y.T)  
+
+      
+        for l in range(self.L-2, 0, -1):
+            Z = np.dot(self.w[l-1], self.xi[l-1]) - self.theta[l-1]
+            self.delta[l] = np.dot(self.w[l].T, self.delta[l+1]) * self.activation_derivative(Z)
+
+   
+        for l in range(1, self.L):
+            self.w[l-1] -= (self.learning_rate / m) * np.dot(self.delta[l], self.xi[l-1].T)
+            self.theta[l-1] -= (self.learning_rate / m) * np.sum(self.delta[l], axis=1, keepdims=True)
+
 
     def fit(self, X, y, epochs, learning_rate):
 
