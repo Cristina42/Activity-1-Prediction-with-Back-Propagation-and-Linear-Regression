@@ -147,7 +147,6 @@ print(df_with_encoded.head())
 
 
 
-
 # List of the 15 columns 
 columns = df_with_encoded.columns
 
@@ -167,64 +166,8 @@ plt.tight_layout()
 plt.show()
 
 
-
-
-# Apply Box-Cox transformation to each column
-df_transformed = df_with_encoded.copy()
-
-for column in df_transformed.columns:
-    # Apply Box-Cox to positive values only
-    if df_transformed[column].min() > 0:
-        df_transformed[column], _ = stats.boxcox(df_transformed[column])
-
-
-# Plot histograms for transformed variables
-plt.figure(figsize=(18, 12))
-count = 1
-for column in df_transformed.columns:
-    plt.subplot(4, 5, count)
-    sns.histplot(df_transformed[column], kde=True)
-    plt.title(f'{column} - Transformed', fontsize=12)
-    count += 1
-
-plt.tight_layout()
-plt.show()
-
-
-
-# Create a copy of the dataset to avoid modifying the original
-df_normalized = df_transformed.copy()
-
-# Initialize the MinMaxScaler
-scaler = MinMaxScaler()
-
-# Apply normalization to all columns (assuming they are numerical)
-df_normalized[df_normalized.columns] = scaler.fit_transform(df_normalized[df_normalized.columns])
-
-# Check the first few rows of the normalized dataset
-print(df_normalized.head())
-
-# List of columns (you can replace this with the actual column names if needed)
-columns = df_normalized.columns
-
-# Create a large figure to hold the subplots
-plt.subplots(figsize=(20, 15))
-
-# Plot histograms for all variables
-count = 1
-for column in columns:
-    plt.subplot(3, 5, count)  
-    sns.histplot(df_normalized[column], kde=True, bins=30)
-    plt.title(column, fontsize=12)
-    count += 1
-
-plt.suptitle('Histograms of All Normalized Variables', fontsize=16)
-plt.subplots_adjust(top=0.9)  # Adjust the title positioning
-plt.tight_layout()
-plt.show()
-
 # Save preprocessed dataset to a new CSV file
-df_normalized.to_csv('preprocessed_dataset.csv', index=False)
+df_with_encoded.to_csv('preprocesseddataset.csv', index=False)
 
 # Select randomly 80% of the patterns for training and validation, and the remaining 20% for test
 
