@@ -93,9 +93,7 @@ class NeuralNet:
             self.theta[l] -= self.d_theta_prev[l]
 
     def fit(self, X, y):
-        """
-        Train the network using backpropagation.
-        """
+    # Train the network using backpropagation.
         for epoch in range(self.epochs):
             self.backpropagate(X, y)
             if epoch % 100 == 0:
@@ -103,16 +101,12 @@ class NeuralNet:
                 print(f"Epoch {epoch}/{self.epochs}, Loss: {loss:.4f}")
 
     def predict(self, X):
-        """
-        Perform a forward pass and return predictions.
-        """
+    # Perform a forward pass and return predictions.
         self.forward(X)
         return self.xi[-1]
 
     def loss_epochs(self, X_train, y_train, X_val, y_val):
-        """
-        Track training and validation loss over epochs.
-        """
+    # Track training and validation loss over epochs.
         train_losses = []
         val_losses = []
 
