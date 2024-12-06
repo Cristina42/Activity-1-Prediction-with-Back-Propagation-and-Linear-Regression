@@ -191,3 +191,53 @@ mae = np.mean(np.abs(predictions - y_test))
 mape = np.mean(np.abs((predictions - y_test) / y_test)) * 100
 
 print(f"MSE: {mse:.4f}, MAE: {mae:.4f}, MAPE: {mape:.4f}")
+
+# Define a list of hyperparameter combinations (increase number of epochs, small number of epochs was used to check if it works)
+combinations = [
+    {'layers': [14, 9, 1], 'epochs': 500, 'learning_rate': 0.01, 'momentum': 0.9, 'activation': 'relu'},
+    {'layers': [14, 16, 8, 1], 'epochs': 1000, 'learning_rate': 0.001, 'momentum': 0.8, 'activation': 'tanh'},
+    {'layers': [14, 9, 5, 1], 'epochs': 500, 'learning_rate': 0.01, 'momentum': 0.7, 'activation': 'sigmoid'},
+    {'layers': [14, 10, 1], 'epochs': 750, 'learning_rate': 0.005, 'momentum': 0.7, 'activation': 'relu'},
+    {'layers': [14, 12, 8, 1], 'epochs': 1000, 'learning_rate': 0.001, 'momentum': 0.9, 'activation': 'tanh'},
+    {'layers': [14, 16, 1], 'epochs': 1000, 'learning_rate': 0.0005, 'momentum': 0.9, 'activation': 'relu'},
+    {'layers': [14, 20, 15, 5, 1], 'epochs': 500, 'learning_rate': 0.01, 'momentum': 0.9, 'activation': 'sigmoid'},
+    {'layers': [14, 8, 1], 'epochs': 1000, 'learning_rate': 0.005, 'momentum': 0.8, 'activation': 'relu'},
+    {'layers': [14, 9, 1], 'epochs': 1500, 'learning_rate': 0.0001, 'momentum': 0.9, 'activation': 'tanh'},
+    {'layers': [14, 18, 10, 1], 'epochs': 1000, 'learning_rate': 0.001, 'momentum': 0.8, 'activation': 'relu'}
+]
+
+# Function to calculate MSE, MAE, and MAPE
+def calculate_metrics(predictions, actual):
+    mse = np.mean((predictions - actual) ** 2)
+    mae = np.mean(np.abs(predictions - actual))
+    mape = np.mean(np.abs((predictions - actual) / actual)) * 100
+    return mse, mae, mape
+
+# Function to evaluate each combination
+def evaluate_combinations():
+    for i, params in enumerate(combinations):
+        print(f"\nTesting Combination {i+1}: {params}")
+        
+        layers = params['layers']
+        epochs = params['epochs']
+        learning_rate = params['learning_rate']
+        momentum = params['momentum']
+        activation = params['activation']
+
+        # Initialize NeuralNet with the current combination of hyperparameters
+        nn = NeuralNet(layers, epochs=epochs, learning_rate=learning_rate, momentum=momentum, activation_function=activation)
+
+        # Train the model and track loss for each epoch
+        train_losses, val_losses = nn.loss_epochs(X_train.T, y_train.T, X_val.T, y_val.T)
+
+        # Predict the output on the test set
+        predictions_scaled = nn.predict(X_test.T)
+        predictions = destandardize(predictions_scaled, y_mean, y_std)
+
+        # Calculate and print metrics for MSE, MAE, and MAPE
+        mse, mae, mape = calculate_metrics(predictions, y_test)
+        print(f"Combination {i+1} Metrics:")
+        print(f"MSE: {mse:.4f}, MAE: {mae:.4f}, MAPE: {mape:.4f}%")
+
+# Call the evaluation function
+evaluate_combinations()
