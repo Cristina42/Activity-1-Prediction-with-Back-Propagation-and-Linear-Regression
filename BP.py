@@ -50,3 +50,144 @@ class NeuralNet:
 
     def tanh_derivative(self, z):
         return 1 - np.tanh(z) ** 2
+
+    def activation_function(self, z, is_output_layer=False):
+    # Dynamically choose the activation function based on self.fact
+        activation_func, _ = self.activations[self.fact]
+    
+    # Apply the chosen activation function to both hidden and output layers
+        return activation_func(z)
+
+    def activation_derivative(self, z, is_output_layer=False):
+    # Dynamically choose the activation derivative based on the one set in self.fact
+        _, activation_deriv = self.activations[self.fact]
+    
+    # Apply the derivative of the chosen activation function to both hidden and output layers
+        return activation_deriv(z)
+
+    def forward(self, X):
+        self.xi[0] = X  # Input layer activations
+        for l in range(1, self.L - 1):  # Hidden layers
+            z = np.dot(self.w[l - 1], self.xi[l - 1]) + self.theta[l - 1]
+            self.xi[l] = self.activation_function(z)
+        z_output = np.dot(self.w[-1], self.xi[-2]) + self.theta[-1]
+        self.xi[-1] = self.activation_function(z_output, is_output_layer=True)
+
+    def backpropagate(self, X, y):
+        self.forward(X)
+    
+    # Output layer error
+        self.delta[-1] = (self.xi[-1] - y) * self.activation_derivative(self.xi[-1], is_output_layer=True)
+    
+    # Gradient clipping
+        max_grad_norm = 1.0  # Maximum gradient norm value
+        for l in range(self.L - 1):
+        # Clip the gradients to ensure they don't explode
+            self.delta[l] = np.clip(self.delta[l], -max_grad_norm, max_grad_norm)
+    
+    # Backpropagate the error to the hidden layers
+        for l in range(self.L - 2, 0, -1):  # Hidden layers
+            self.delta[l - 1] = np.dot(self.w[l].T, self.delta[l]) * self.activation_derivative(self.xi[l])
+
+    # Update weights and biases
+        for l in range(self.L - 1):
+            self.d_w_prev[l] = self.learning_rate * np.dot(self.delta[l], self.xi[l].T) + self.momentum * self.d_w_prev[l]
+            self.d_theta_prev[l] = self.learning_rate * np.sum(self.delta[l], axis=1, keepdims=True) + self.momentum * self.d_theta_prev[l]
+            self.w[l] -= self.d_w_prev[l]
+            self.theta[l] -= self.d_theta_prev[l]
+
+     def fit(self, X, y):
+    # Train the network using backpropagation.
+        for epoch in range(self.epochs):
+            self.backpropagate(X, y)
+            if epoch % 100 == 0:
+                loss = np.mean((self.xi[-1] - y) ** 2)
+                print(f"Epoch {epoch}/{self.epochs}, Loss: {loss:.4f}")
+    
+    def predict(self, X):
+    # Perform a forward pass and return predictions.
+        self.forward(X)
+        return self.xi[-1]
+
+    def loss_epochs(self, X_train, y_train, X_val, y_val):
+    # Track training and validation loss over epochs.
+        train_losses = []
+        val_losses = []
+
+        for epoch in range(self.epochs):
+            self.fit(X_train, y_train)
+            train_pred = self.predict(X_train)
+            val_pred = self.predict(X_val)
+
+            train_loss = np.mean((train_pred - y_train) ** 2)  # MSE for training
+            val_loss = np.mean((val_pred - y_val) ** 2)  # MSE for validation
+
+            train_losses.append(train_loss)
+            val_losses.append(val_loss)
+
+        return np.array(train_losses), np.array(val_losses)
+
+    def split_data(self, X, y):
+        # Perform validation split
+        validation_size = int(len(X) * self.validation_split)
+        X_train = X[validation_size:]
+        y_train = y[validation_size:]
+        X_val = X[:validation_size]
+        y_val = y[:validation_size]
+        return X_train, y_train, X_val, y_val
+
+# Standardize Functions
+def standardize(data):
+    mean = np.mean(data, axis=0)
+    std = np.std(data, axis=0)
+    standardized_data = (data - mean) / std
+    return standardized_data, mean, std
+
+
+def destandardize(data, mean, std):
+    return data * std + mean
+
+
+# Load Data
+def load_data(train_data, test_data):
+    train = pd.read_csv(train_data)
+    test = pd.read_csv(test_data)
+
+    # Separate features and targets
+    X_train_val = train.iloc[:, :-1].values
+    y_train_val = train.iloc[:, -1].values
+    X_test = test.iloc[:, :-1].values
+    y_test = test.iloc[:, -1].values
+
+    # Standardize
+    X_train_std, X_mean, X_std = standardize(X_train_val)
+    X_test_std = (X_test - X_mean) / X_std
+
+    y_train_std, y_mean, y_std = standardize(y_train_val)
+    y_test_std = (y_test - y_mean) / y_std
+
+    return X_train_std, y_train_std, X_test_std, y_test_std, y_mean, y_std
+
+
+# Main Code
+X_train, y_train, X_test, y_test, y_mean, y_std = load_data("traindata.csv", "testdata.csv")
+
+layers = [14, 19, 10, 1]
+nn = NeuralNet(layers, epochs=10, learning_rate=0.001, momentum=0.9, activation_function="tanh", validation_split=0.2)
+
+# Split data within NeuralNet
+X_train_split, y_train_split, X_val, y_val = nn.split_data(X_train, y_train)
+
+# Train
+train_losses, val_losses = nn.loss_epochs(X_train_split.T, y_train_split.T, X_val.T, y_val.T)
+
+# Predict and destandardize
+predictions_std = nn.predict(X_test.T)
+predictions = destandardize(predictions_std, y_mean, y_std)
+
+# Evaluate
+mse = np.mean((predictions - y_test) ** 2)
+mae = np.mean(np.abs(predictions - y_test))
+mape = np.mean(np.abs((predictions - y_test) / y_test)) * 100
+
+print(f"MSE: {mse:.4f}, MAE: {mae:.4f}, MAPE: {mape:.4f}")
