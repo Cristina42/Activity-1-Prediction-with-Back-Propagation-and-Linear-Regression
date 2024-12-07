@@ -1,5 +1,12 @@
 # our own implemented BP model
-
+import numpy as np 
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.preprocessing import LabelEncoder
+from scipy import stats
+from sklearn.preprocessing import MinMaxScaler
+import pandas as pd
+from sklearn.model_selection import train_test_split
 class NeuralNet:
     def __init__(self, layers, epochs, learning_rate, momentum, activation_function, validation_split=0.2):
         self.L = len(layers)  # Number of layers
@@ -12,7 +19,7 @@ class NeuralNet:
 
  # Initialize activations, weights, biases, and error terms
         self.xi = [np.zeros((layer, 1)) for layer in layers]  # Activations (ξ)
-        self.w = [np.random.randn(layers[l], layers[l-1]) * 0.01 for l in range(1, self.L)
+        self.w = [np.random.randn(layers[l], layers[l-1]) * 0.01 for l in range(1, self.L)]
         self.theta = [np.zeros((layer, 1)) for layer in layers[1:]]  # Thresholds (biases θ)
         self.delta = [np.zeros((layer, 1)) for layer in layers[1:]]  # Error terms (Δ)
         self.d_w_prev = [np.zeros_like(w) for w in self.w]  # Previous weight changes
