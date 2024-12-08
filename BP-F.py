@@ -36,35 +36,7 @@ y_train_tensor = torch.tensor(y_train_scaled, dtype=torch.float32)
 
 X_test_tensor = torch.tensor(X_test_scaled, dtype=torch.float32)
 y_test_tensor = torch.tensor(y_test_scaled, dtype=torch.float32)
-# Define the Neural Network
-# class FeedforwardNN(nn.Module):
-#     def __init__(self, input_size, hidden_layers, output_size, activation_func):
-#         super(FeedforwardNN, self).__init__()
-#         layers = []
-#         sizes = [input_size] + hidden_layers + [output_size]
-#         for i in range(len(sizes) - 1):
-#             layers.append(nn.Linear(sizes[i], sizes[i + 1]))
-#             if i < len(sizes) - 2:  
-#                 if activation_func == 'relu':
-#                     layers.append(nn.ReLU())
-#                 elif activation_func == 'tanh':
-#                     layers.append(nn.Tanh())
-#                 elif activation_func == 'sigmoid':
-#                     layers.append(nn.Sigmoid())
-#         self.model = nn.Sequential(*layers)
 
-#     def forward(self, x):
-#         return self.model(x)
-
-# # Initialize the neural network
-# input_size = X_train_scaled.shape[1]
-# hidden_layers = [16, 8]
-# output_size = 1
-# activation_func = 'relu'
-
-# model = FeedforwardNN(input_size, hidden_layers, output_size, activation_func)
-
-# Define the Neural Network
 model = nn.Sequential(
     nn.Linear(X_train.shape[1], 16),  # Input to hidden layer 1
     nn.ReLU(),                       # Activation
