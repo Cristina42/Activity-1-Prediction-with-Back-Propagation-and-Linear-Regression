@@ -19,7 +19,7 @@ class NeuralNet:
 
  # Initialize activations, weights, biases, and error terms
         self.xi = [np.zeros((layer, 1)) for layer in layers]  # Activations (ξ)
-        self.w = [np.random.randn(layers[l], layers[l-1]) * 0.01 for l in range(1, self.L)]
+        self.w = [np.random.randn(layers[l], layers[l-1]) * 0.01 for l in range(1, self.L)] # initializing of weights
         self.theta = [np.zeros((layer, 1)) for layer in layers[1:]]  # Thresholds (biases θ)
         self.delta = [np.zeros((layer, 1)) for layer in layers[1:]]  # Error terms (Δ)
         self.d_w_prev = [np.zeros_like(w) for w in self.w]  # Previous weight changes
