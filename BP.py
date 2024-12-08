@@ -109,7 +109,7 @@ class NeuralNet:
             self.backpropagate(X, y)
             if epoch % 100 == 0:
                 loss = np.mean((self.xi[-1] - y) ** 2)
-                print(f"Epoch {epoch}/{self.epochs}, Loss: {loss:.4f}")
+                # print(f"Epoch {epoch}/{self.epochs}, Loss: {loss:.4f}")
     
     def predict(self, X):
     # Perform a forward pass and return predictions.
@@ -248,3 +248,102 @@ def evaluate_combinations():
 
 # Call the evaluation function
 evaluate_combinations()
+
+def plot_scatter(actual, predicted, title, figure_path):
+    import matplotlib.pyplot as plt
+    plt.figure(figsize=(8, 6))
+    plt.scatter(actual, predicted, alpha=0.6, color="blue")
+    plt.plot([actual.min(), actual.max()], [actual.min(), actual.max()], linestyle="--", color="red")
+    plt.title(title)
+    plt.xlabel("Actual Values (zμ)")
+    plt.ylabel("Predicted Values (ŷμ)")
+    plt.grid(True)
+    plt.savefig(figure_path)
+    plt.show()
+
+def plot_loss_curves(train_losses, val_losses, title, figure_path):
+    import matplotlib.pyplot as plt
+    plt.figure(figsize=(8, 6))
+    plt.plot(train_losses, label="Training Loss")
+    plt.plot(val_losses, label="Validation Loss", linestyle="--")
+    plt.title(title)
+    plt.xlabel("Epochs")
+    plt.ylabel("Loss")
+    plt.legend()
+    plt.grid(True)
+    plt.savefig(figure_path)
+    plt.show()
+
+# Initialize the neural network with the best parameters
+best_nn = NeuralNet(
+    layers=[14, 16, 8, 1],
+    epochs=1000,
+    learning_rate=0.001,
+    momentum=0.8,
+    activation_function="tanh"
+)
+
+# Split the training data
+X_train_split, y_train_split, X_val, y_val = best_nn.split_data(X_train, y_train)
+
+# Train the model
+train_losses_best, val_losses_best = best_nn.loss_epochs(
+    X_train_split.T,
+    y_train_split.T,
+    X_val.T,
+    y_val.T
+)
+
+# Make predictions on the test set
+best_predictions = best_nn.predict(X_test.T)
+
+plot_scatter(
+    y_test, 
+    best_predictions, 
+    "Figure 5: Best Combination - Actual vs Predicted Values", 
+    "figure5_best_combination.png"
+)
+
+plot_loss_curves(
+    train_losses_best,
+    val_losses_best,
+    "Figure 7: Best Combination - Loss Curves",
+    "figure7_loss_best_combination.png"
+)
+
+# Initialize the neural network with the representative parameters
+rep_nn = NeuralNet(
+    layers=[14, 10, 1],
+    epochs=750,
+    learning_rate=0.005,
+    momentum=0.7,
+    activation_function="relu"
+)
+
+# Split the training data
+X_train_split, y_train_split, X_val, y_val = rep_nn.split_data(X_train, y_train)
+
+# Train the model
+train_losses_rep, val_losses_rep = rep_nn.loss_epochs(
+    X_train_split.T,
+    y_train_split.T,
+    X_val.T,
+    y_val.T
+)
+
+# Make predictions on the test set
+rep_predictions = rep_nn.predict(X_test.T)
+
+plot_scatter(
+    y_test, 
+    rep_predictions, 
+    "Figure 6: Representative Combination - Actual vs Predicted Values", 
+    "figure6_representative_combination.png"
+)
+
+plot_loss_curves(
+    train_losses_rep,
+    val_losses_rep,
+    "Figure 8: Representative Combination - Loss Curves",
+    "figure8_loss_representative_combination.png"
+)
